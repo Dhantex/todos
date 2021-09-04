@@ -1,48 +1,49 @@
 import React from 'react';
 
 import {TodoCounter} from '../TodoCounter'
+import {TodoContext} from '../TodoContext'
 import {TodoSearch} from '../TodoSearch'
 import {TodoList} from '../TodoList'
 import {CreateTodoButton} from '../CreateTodoButton'
 import {TodoItem} from '../TodoItem'
 
-function AppUI(props){
+function AppUI(){
     return (
         <React.Fragment>
-            <TodoCounter 
-                total={props.totalTodos}
-                completed={props.completedTodos}
-            />
+            <TodoCounter/>
+            <TodoSearch/>
 
-            <TodoSearch
-                searchValue ={props.searchValue} 
-                setSearchValue = {props.setSearchValue}
-            />
+            <TodoContext.Consumer>
+                {({
+                    error,
+                    loading,
+                    searchedTodos,
+                    completeTodoItem,
+                    deleteTodoItem,
+                }) => (
+                    <TodoList>
+                        {error && <p>Ha ocurrido un error en la aplicación...</p>}
+                        {loading && <p>Estamos cargando, no desesperes...</p>}
+                        {(!loading && !searchedTodos.length) && <p>¡Crea tu primer ToDo!</p>}
 
+                        {searchedTodos.map(todo => (
+                            <TodoItem 
+                                    key={todo.id} 
+                                    text={todo.text} 
+                                    completed={todo.completed}
+                                    onComplete={() => completeTodoItem(todo.id)}
+                                    onDelete={() => deleteTodoItem(todo.id)}
+                            />
+                        ))}
 
-            <TodoList>
-                {props.error && <p>Ha ocurrido un error en la aplicación...</p>}
-                {props.loading && <p>Estamos cargando, no desesperes...</p>}
-                {(!props.loading && !props.todoFilter.length) && <p>¡Crea tu primer ToDo!</p>}
+                        {/* {todoFilter.map((item, i) => (
+                        <TodoItem key={i}{...item} />
+                        ))} */}
+                    </TodoList>
+                )}
+            </TodoContext.Consumer>
 
-                {props.todoFilter.map(todo => (
-                    <TodoItem key={todo.id} 
-                            text={todo.text} 
-                            completed={todo.completed}
-                            onComplete={() => props.completeTodoItem(todo.id)}
-                            onDelete={() => props.deleteTodoItem(todo.id)}
-                    />
-                ))}
-
-                {/* {todoFilter.map((item, i) => (
-                <TodoItem key={i}{...item} />
-                ))} */}
-            </TodoList>
-
-            <CreateTodoButton
-                newValue = {props.newValue}
-                setNewValue = {props.setNewValue}
-            />
+            <CreateTodoButton />
 
             </React.Fragment>
     );
