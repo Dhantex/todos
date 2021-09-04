@@ -47,6 +47,28 @@ function TodoProvider(props){
     saveTodos(newTodos);
     };
 
+    const AddTodoItem = (text) =>{
+
+        let searchedTodos = todos.findIndex(todo => todo.text === text);
+        
+        console.log(`AddTodoItem: ${searchedTodos}`);
+
+        if(searchedTodos === -1){
+
+            let maxId = Math.max(...todos) + 1;
+
+            const newTodos = [...todos];
+            newTodos.push({
+                id: maxId,
+                text: text,
+                completed: false,
+            });
+        
+            saveTodos(newTodos);
+        }
+    }
+
+
     // console.log('antes del use effect');
 
     // useEffect(() => {
@@ -64,6 +86,7 @@ function TodoProvider(props){
             searchedTodos,
             completeTodoItem,
             deleteTodoItem,
+            AddTodoItem,
             loading,
             error,
             openModal,

@@ -1,14 +1,13 @@
 //Custom Hooks
-import React from 'react';
 import {useState, useEffect} from 'react';
 
 function useLocalStorage(storageName, initialValue){
 
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState(false);
-    const [item, setItem] = React.useState(initialValue)
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
+    const [item, setItem] = useState(initialValue)
 
-    React.useEffect(() =>{
+    useEffect(() =>{
 
         setTimeout(() =>{
 
