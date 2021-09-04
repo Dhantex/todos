@@ -21,6 +21,10 @@ function AppUI(props){
 
 
             <TodoList>
+                {props.error && <p>Ha ocurrido un error en la aplicación...</p>}
+                {props.loading && <p>Estamos cargando, no desesperes...</p>}
+                {(!props.loading && !props.todoFilter.length) && <p>¡Crea tu primer ToDo!</p>}
+
                 {props.todoFilter.map(todo => (
                     <TodoItem key={todo.id} 
                             text={todo.text} 

@@ -1,6 +1,6 @@
 // import './App.css';
 import React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {AppUI} from '../App/AppUI'
 
 // const defaultToDos = [
@@ -13,29 +13,53 @@ import {AppUI} from '../App/AppUI'
 //Custom Hooks
 function useLocalStorage(storageName, initialValue){
 
-  const localStorageItem = localStorage.getItem(storageName)
-  let parsedItem;
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [item, setItem] = useState(initialValue)
+
+  useEffect(() =>{
+
+    try {
+
+      setTimeout(() =>{
+
+        const localStorageItem = localStorage.getItem(storageName)
+        let parsedItem;
+
+        if(!localStorageItem){
+          localStorage.setItem(storageName, JSON.stringify(initialValue))
+          parsedItem = [];
+        }else{
+          parsedItem = JSON.parse(localStorageItem)
+        }
+
+        setItem(parsedItem);
+        setLoading(false);
+
+      },1000)
+
+    } catch (error) {
+        setError(error);
+    }
+  }) ;
+
+  const saveItem = (newItem) => {
+    try {
+      const stringifyItem = JSON.stringify(newItem);
+      localStorage.setItem(storageName,stringifyItem)
   
-  if(!localStorageItem){
-    localStorage.setItem(storageName, JSON.stringify(initialValue))
-    parsedItem = [];
-  }else{
-    parsedItem = JSON.parse(localStorageItem)
+      setItem(newItem);
+    } catch (error) {
+        setError(error);
+    }
   }
 
-  const [item, setItem] = useState(parsedItem)
-  
-  const saveItem = (newItem) => {
-    const stringifyItem = JSON.stringify(newItem);
-    localStorage.setItem(storageName,stringifyItem)
-    
-    setItem(newItem);
-  }
-  
-  return [
+  return {
     item,
     saveItem,
-  ];
+    loading,
+    error
+  };
 }
 
 
@@ -43,7 +67,11 @@ function useLocalStorage(storageName, initialValue){
 function App() {
 
   //Se usa el custom Hooks creado.
-  const[todos, saveTodos] = useLocalStorage('TODOS_V1',[]);
+  const{item: todos,
+        saveItem: saveTodos ,
+        loading,
+        error,
+        } = useLocalStorage('TODOS_V1',[]);
 
   const [searchValue, setSearchValue] = useState('');
   // const [newValue, setNewValue] = useState('');
@@ -79,6 +107,14 @@ function App() {
     saveTodos(newTodos);
   };
 
+  // console.log('antes del use effect');
+
+  // useEffect(() => {
+  //   console.log('use effect')
+  // }, [totalTodos]);
+
+  // console.log('luego dle useffect');
+
 
   return (
     <AppUI 
@@ -89,6 +125,8 @@ function App() {
       todoFilter={todoFilter}
       completeTodoItem = {completeTodoItem}
       deleteTodoItem = {deleteTodoItem}
+      loading = {loading}
+      error = {error}
     />
 
   );
