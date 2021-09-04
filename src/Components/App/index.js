@@ -3,17 +3,31 @@ import React from 'react';
 import {useState} from 'react';
 import {AppUI} from '../App/AppUI'
 
-const defaultToDos = [
-  { id: 1, text: 'Cortar cebolla', completed: true},
-  { id: 2, text: 'Tomar el curso de intro de react', completed: true},
-  { id: 3, text: 'Llorar con la llorona', completed: false},
-  { id: 4, text: 'search', completed: false},
-];
+// const defaultToDos = [
+//   { id: 1, text: 'Cortar cebolla', completed: true},
+//   { id: 2, text: 'Tomar el curso de intro de react', completed: true},
+//   { id: 3, text: 'Llorar con la llorona', completed: false},
+//   { id: 4, text: 'search', completed: false},
+// ];
 
 
 function App() {
 
-  const [todos, setTodos] = useState(defaultToDos)
+  //Manejo de localstorage
+
+  // localStorage.setItem('TODOS_V1',JSON.stringify(defaultToDos));
+  const localStorageTodos = localStorage.getItem('TODOS_V1')
+
+  let parsedTodos;
+
+  if(!localStorageTodos){
+    localStorage.setItem('TODOS_V1', JSON.stringify([]))
+    parsedTodos = [];
+  }else{
+    parsedTodos = JSON.parse(localStorageTodos)
+  }
+
+  const [todos, setTodos] = useState(parsedTodos)
   const [searchValue, setSearchValue] = useState('');
   const [newValue, setNewValue] = useState('');
 
@@ -24,6 +38,12 @@ function App() {
   // var item = {id: {totalTodos}+1, text: {newValue}, completed: false}
   
 
+    const saveTodos = (newTodos) => {
+      const stringifyTodos = JSON.stringify(newTodos);
+      localStorage.setItem('TODOS_V1',stringifyTodos)
+
+      setTodos(newTodos);
+    }
 
   const completeTodoItem = (id) =>{
 
@@ -32,7 +52,7 @@ function App() {
     const newTodos = [...todos];
     newTodos[todoIndex].completed = !newTodos[todoIndex].completed;
 
-    setTodos(newTodos);
+    saveTodos(newTodos);
   };
 
   const deleteTodoItem = (id) =>{
@@ -44,8 +64,8 @@ function App() {
 
     // delete newTodos[todoIndex];
 
-    setTodos(newTodos);
-  };  
+    saveTodos(newTodos);
+  };
 
 
   return (
@@ -57,7 +77,6 @@ function App() {
       todoFilter={todoFilter}
       completeTodoItem = {completeTodoItem}
       deleteTodoItem = {deleteTodoItem}
-
     />
 
   );
