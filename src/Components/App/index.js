@@ -1,12 +1,7 @@
 // import './App.css';
 import React from 'react';
 import {useState} from 'react';
-
-import {TodoCounter} from '../TodoCounter'
-import {TodoSearch} from '../TodoSearch'
-import {TodoList} from '../TodoList'
-import {CreateTodoButton} from '../CreateTodoButton'
-import {TodoItem} from '../TodoItem'
+import {AppUI} from '../App/AppUI'
 
 const defaultToDos = [
   { id: 1, text: 'Cortar cebolla', completed: true},
@@ -54,39 +49,16 @@ function App() {
 
 
   return (
-    <React.Fragment>
-      <TodoCounter 
-        total={totalTodos}
-        completed={completedTodos}
-      />
+    <AppUI 
+      totalTodos={totalTodos}
+      completedTodos={completedTodos}
+      searchValue ={searchValue} 
+      setSearchValue = {setSearchValue}
+      todoFilter={todoFilter}
+      completeTodoItem = {completeTodoItem}
+      deleteTodoItem = {deleteTodoItem}
 
-      <TodoSearch
-        searchValue ={searchValue} 
-        setSearchValue = {setSearchValue}
-      />
-
-
-      <TodoList>
-        {todoFilter.map(todo => (
-            <TodoItem key={todo.id} 
-                      text={todo.text} 
-                      completed={todo.completed}
-                      onComplete={() => completeTodoItem(todo.id)}
-                      onDelete={() => deleteTodoItem(todo.id)}
-            />
-          ))}
-
-          {/* {todoFilter.map((item, i) => (
-          <TodoItem key={i}{...item} />
-        ))} */}
-      </TodoList>
-
-      <CreateTodoButton
-        newValue = {newValue}
-        setNewValue = {setNewValue}
-      />
-
-    </React.Fragment>
+    />
 
   );
 }
