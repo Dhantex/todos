@@ -10,26 +10,43 @@ import {AppUI} from '../App/AppUI'
 //   { id: 4, text: 'search', completed: false},
 // ];
 
+//Custom Hooks
+function useLocalStorage(storageName, initialValue){
+
+  const localStorageItem = localStorage.getItem(storageName)
+  let parsedItem;
+  
+  if(!localStorageItem){
+    localStorage.setItem(storageName, JSON.stringify(initialValue))
+    parsedItem = [];
+  }else{
+    parsedItem = JSON.parse(localStorageItem)
+  }
+
+  const [item, setItem] = useState(parsedItem)
+  
+  const saveItem = (newItem) => {
+    const stringifyItem = JSON.stringify(newItem);
+    localStorage.setItem(storageName,stringifyItem)
+    
+    setItem(newItem);
+  }
+  
+  return [
+    item,
+    saveItem,
+  ];
+}
+
+
 
 function App() {
 
-  //Manejo de localstorage
+  //Se usa el custom Hooks creado.
+  const[todos, saveTodos] = useLocalStorage('TODOS_V1',[]);
 
-  // localStorage.setItem('TODOS_V1',JSON.stringify(defaultToDos));
-  const localStorageTodos = localStorage.getItem('TODOS_V1')
-
-  let parsedTodos;
-
-  if(!localStorageTodos){
-    localStorage.setItem('TODOS_V1', JSON.stringify([]))
-    parsedTodos = [];
-  }else{
-    parsedTodos = JSON.parse(localStorageTodos)
-  }
-
-  const [todos, setTodos] = useState(parsedTodos)
   const [searchValue, setSearchValue] = useState('');
-  const [newValue, setNewValue] = useState('');
+  // const [newValue, setNewValue] = useState('');
 
   const completedTodos = todos.filter(todo => !!todo.completed).length;
   const totalTodos = todos.length;
@@ -38,12 +55,7 @@ function App() {
   // var item = {id: {totalTodos}+1, text: {newValue}, completed: false}
   
 
-    const saveTodos = (newTodos) => {
-      const stringifyTodos = JSON.stringify(newTodos);
-      localStorage.setItem('TODOS_V1',stringifyTodos)
 
-      setTodos(newTodos);
-    }
 
   const completeTodoItem = (id) =>{
 
