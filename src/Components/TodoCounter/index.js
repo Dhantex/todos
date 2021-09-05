@@ -9,7 +9,7 @@ function TodoCounter() {
 
     return(
         <React.Fragment>
-            <h2 className="TodoCounter">Has completado {completedTodos} de {totalTodos} Todos</h2>
+            <h2 className="TodoCounter">Has completado {completedTodos} de {totalTodos} TODO</h2>
         </React.Fragment>
     );
 }
